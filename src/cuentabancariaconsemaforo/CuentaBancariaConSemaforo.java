@@ -22,11 +22,16 @@ public class CuentaBancariaConSemaforo {
         CajeroBanco cba3 = new CajeroBanco(cb, "CajaMadrid");
 
         cba.start();
-        cba.join();
+       
+        
         cba2.start();
-        cba2.join();
+
         cba3.start();
+       
+        cba.join();
+        cba2.join();
         cba3.join();
+        System.out.println("FINAL : "+cb.toString());
 
     }
 

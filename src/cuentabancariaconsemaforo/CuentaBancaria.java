@@ -5,6 +5,8 @@
  */
 package cuentabancariaconsemaforo;
 
+import java.util.concurrent.Semaphore;
+
 /**
  *
  * @author sportak
@@ -13,22 +15,34 @@ public class CuentaBancaria {
 
     private String titular;
     private Double saldo;
-    private int semaforo;
+    private int semaforo=1;
+
+    
 
     public CuentaBancaria(String titular, Double saldo) {
-        this.titular = titular;
-        this.saldo = saldo;
-        this.semaforo=1;
-    }
+		super();
+		this.titular = titular;
+		this.saldo = saldo;
+		
+	}
+    public CuentaBancaria() {}
 
-    public void ingresar(Double pasta) {
+	public void ingresar(Double pasta) {
+		sendWait();
+        
         double actual = this.getSaldo();
         this.setSaldo(actual + pasta);
+        
+        sendSignal();
     }
 
     public void sacar(Double pasta) {
+    	sendWait();
+        
         double actual = this.getSaldo();
         this.setSaldo(actual - pasta);
+        
+        sendSignal();
     }
 
     public String getTitular() {
@@ -48,15 +62,25 @@ public class CuentaBancaria {
     }
 
     public int getSemaforo() {
-        return semaforo;
-    }
-
-    public void setSemaforo(int semaforo) {
-        this.semaforo = semaforo;
-    }
-    
-
-    @Override
+		return semaforo;
+	}
+	public void setSemaforo(int semaforo) {
+		this.semaforo = semaforo;
+	}
+	
+	public void sendWait() {
+		while(this.getSemaforo()<=0) {
+			System.out.println(".");
+		}
+		this.setSemaforo(0);
+	}
+	
+	public void sendSignal() {
+		this.setSemaforo(1);
+		
+	}
+	
+	@Override
     public String toString() {
         return "CuentaBacaria{" + "titular=" + titular + ", saldo=" + saldo + '}';
     }
